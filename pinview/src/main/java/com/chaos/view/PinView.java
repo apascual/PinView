@@ -96,6 +96,10 @@ public class PinView extends AppCompatEditText {
     private int mCursorWidth;
     private int mCursorColor;
 
+    private boolean mEnableStatusColor;
+    private int mEmptyColor;
+    private int mFilledColor;
+
     public PinView(Context context) {
         this(context, null);
     }
@@ -139,6 +143,8 @@ public class PinView extends AppCompatEditText {
         mCursorColor = a.getColor(R.styleable.PinView_cursorColor, getCurrentTextColor());
         mCursorWidth = a.getDimensionPixelSize(R.styleable.PinView_cursorWidth,
                 res.getDimensionPixelSize(R.dimen.pv_pin_view_cursor_width));
+
+        mEnableStatusColor = false;
 
         a.recycle();
 
@@ -300,6 +306,14 @@ public class PinView extends AppCompatEditText {
             updateItemRectF(i);
             updateCenterPoint();
 
+            if(this.mEnableStatusColor) {
+                if (i < getText().length()) {
+                    mPaint.setColor(this.mEmptyColor);
+                } else {
+                    mPaint.setColor(this.mFilledColor);
+                }
+            }
+
             if (mViewType == VIEW_TYPE_RECTANGLE) {
                 drawPinBox(canvas, i);
             } else {
@@ -322,7 +336,7 @@ public class PinView extends AppCompatEditText {
         }
 
         // highlight the next item
-        if (isFocused() && getText().length() != mPinItemCount) {
+        if (!this.mEnableStatusColor && isFocused() && getText().length() != mPinItemCount) {
             int index = getText().length();
             updateItemRectF(index);
             updateCenterPoint();
@@ -945,5 +959,17 @@ public class PinView extends AppCompatEditText {
 
     private int dpToPx(float dp) {
         return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
+    }
+
+    public void setStatusColors(int emptyColor, int filledColor) {
+        if(emptyColor == -1 || filledColor == -1) {
+            this.mEnableStatusColor = false;
+        } else {
+            this.mEnableStatusColor = true;
+            this.mEmptyColor = emptyColor;
+            this.mFilledColor = filledColor;
+            this.mLineColor = ColorStateList.valueOf(emptyColor);
+        }
+        updateColors();
     }
 }
