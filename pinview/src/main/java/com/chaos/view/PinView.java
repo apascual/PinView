@@ -308,9 +308,9 @@ public class PinView extends AppCompatEditText {
 
             if(this.mEnableStatusColor) {
                 if (i < getText().length()) {
-                    mPaint.setColor(this.mEmptyColor);
-                } else {
                     mPaint.setColor(this.mFilledColor);
+                } else {
+                    mPaint.setColor(this.mEmptyColor);
                 }
             }
 
